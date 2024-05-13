@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Link , useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/Signup.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart , signInSuccess, signInFailure} from '../../redux/userSlice';
+
 
 export default function Signin() {
-  const [formData , setFormData] = useState({});
-  const [error , setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({});
+  const {loading, error} = useSelector((state) => state.user)
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -20,31 +22,29 @@ export default function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      console.log("Form Data:", formData);
-      const res = await fetch ('/api/auth/login', {
+      dispatch(signInStart());
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type' : 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if(data.success === false){
-        setLoading(false);
-        setError(data.message);
+      if (data.success === false) {
+        dispatch(signInFailure);
         return;
       }
-      setLoading(false);
-      setError(null);
-      navigate('/');
-      console.log( data); 
-      document.getElementById('username').value = '';
+      dispatch(signInSuccess(data))
+      setSuccessMessage('Login successful!');
+      setTimeout(() => {
+        setSuccessMessage('');
+        navigate('/');
+      }, 3000);
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message))
     }
   };
 

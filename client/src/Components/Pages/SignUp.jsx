@@ -20,8 +20,6 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      console.log("Form Data:", formData);
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -39,11 +37,9 @@ export default function SignUp() {
       setError(null);
       setShowSuccess(true); 
       setTimeout(() => {
-        setShowSuccess(false); // Hide the success message after 3 seconds
+        setShowSuccess(false); 
         navigate('/sign-in');
       }, 3000);
-      console.log(data);
-      // Clear input fields after successful submission
       setFormData({
         username: '',
         email: '',
