@@ -4,6 +4,14 @@
   margin: 0 auto;
 }
 
+.success-message {
+  background-color: #d4edda; 
+  color: #155724;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
 .signup-title {
   margin-top: 1.75rem;
   font-size: 1.875rem;
