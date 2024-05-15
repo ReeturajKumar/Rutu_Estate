@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Profile.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../../Firebase';
+import { updateUserStart , UpdateuserSuccess, UpdateuserFailure} from '../../redux/userSlice';
 
 export default function ProfilePage() {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [fileperc, setFilePerc] = useState(0);
   const [fileError, setFileError] = useState(false);
   const [formData, setFormData] = useState({});
+  const dispatch = useDispatch();
+  const [updateSuccess, setupdateSuccess] = useState(false);
 
   useEffect(() => {
     if (file) {
@@ -48,11 +51,36 @@ export default function ProfilePage() {
     );
   };
   
+const handleChange = (e) => {
+  setFormData({ ...formData, [e.target.id] : e.target.value})
+};
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    dispatch(updateUserStart());
+    const res = await fetch (`/api/user/update/${currentUser._id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type' : 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if(data.success === false){
+      dispatch(UpdateuserFailure(data.message));
+      return;
+    }
+    dispatch(UpdateuserSuccess(data));
+    setupdateSuccess(true)
+  } catch (error) {
+    dispatch(UpdateuserFailure(error.message));
+  }
+}
   return (
     <div className='profile-container'>
       <h1 className='profile-title'>Profile</h1>
-      <form className='profile-form'>
+      <form onSubmit={handleSubmit} className='profile-form'>
         <input onChange={(e) => setFile(e.target.files[0])} type='file' ref={fileRef} hidden accept='image/*' />
         <img onClick={() => fileRef.current.click()} src={formData.avatar || currentUser.avatar} alt='profile' className='profile-avatar' />
         <p className='text-sm self-center'>
@@ -66,16 +94,19 @@ export default function ProfilePage() {
             ''
           )}
         </p>
-        <input type='text' placeholder='Your Username' id='username' className='profile-input' />
-        <input type='text' placeholder='Your email' id='email' className='profile-input' />
-        <input type='text' placeholder='Your password' id='password' className='profile-input' />
-        <button className='btn'>Update</button>
+        <input type='text' placeholder='Your Username' defaultValue={currentUser.username} id='username' className='profile-input'  onChange={handleChange}/>
+        <input type='text' placeholder='Your email' defaultValue={currentUser.email} id='email' className='profile-input'
+        onChange={handleChange} />
+        <input type='password' placeholder='Your password' id='password' className='profile-input'onChange={handleChange} />
+        <button disabled={loading} className='btn'>{loading ? 'Loading...' : 'Update'}</button>
       </form>
 
       <div className='flex-container'>
         <span className='delete-account'>Delete account</span>
         <span className='sign-out'>Sign out</span>
       </div>
+      <p className='text-red-700 mt-5'>{error ? error: ''}</p>
+      <p className='text-green-700 pt-1'>{updateSuccess ? 'Updated Successfully': ''}</p>
     </div>
   );
 }
