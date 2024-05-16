@@ -1,9 +1,10 @@
 .container {
+  padding-left: 10%;
+  padding-right: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  font-weight: 400;
 }
 
 .container h1{
