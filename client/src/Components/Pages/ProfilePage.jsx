@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Profile.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import { app } from '../../Firebase';
+import { app } from '../../firebase.js';
 import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
 
 export default function ProfilePage() {
@@ -135,7 +135,8 @@ export default function ProfilePage() {
           {fileError ? (
             <span className='text-red-700'>Image size is must be less than 2mb</span>
           ) : fileperc > 0 && fileperc < 100 ? (
-            <span className='text-slate-700'>{`Uploading ${fileperc}%`}</span>
+            <span className='text-slate-700'>{`Uploading ${fileperc}%`}
+            </span>
           ) : fileperc === 100 ? (
             <span className='text-green-700'>Successfully Uploaded !</span>
           ) : (

@@ -6,12 +6,12 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "rutu-estate.firebaseapp.com",
-  projectId: "rutu-estate",
-  storageBucket: "rutu-estate.appspot.com",
-  messagingSenderId: "910001588855",
-  appId: "1:910001588855:web:54a32236b9591648a8d472"
+  authDomain: "reetu-estate.firebaseapp.com",
+  projectId: "reetu-estate",
+  storageBucket: "reetu-estate.appspot.com",
+  messagingSenderId: "407381380616",
+  appId: "1:407381380616:web:98578437b6c4535ddf8bbd"
 };
 
 // Initialize Firebase
- export const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
