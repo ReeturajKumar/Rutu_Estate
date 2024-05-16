@@ -4,6 +4,7 @@ import '../CSS/Profile.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../../firebase.js';
 import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
+import { Link } from 'react-router-dom';
 
 export default function ProfilePage() {
   const fileRef = useRef(null);
@@ -169,6 +170,9 @@ export default function ProfilePage() {
         <button disabled={loading} className='btn'>
           {loading ? 'Loading...' : 'Update'}
         </button>
+        <Link className='btn2' to={"/create-listing"}>
+          Create Listing
+        </Link>
       </form>
 
       <div className='flex-container'>

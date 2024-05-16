@@ -44,6 +44,16 @@
   transition: opacity 0.2s ease;
 }
 
+.btn2{
+  background-color: green;
+  color: #ffffff;
+  padding:0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  text-transform: uppercase; 
+  text-align: center;
+  transition: 0.2s ease;
+}
+
 .btn:hover {
   opacity: 0.95;
 }
