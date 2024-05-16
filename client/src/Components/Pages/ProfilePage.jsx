@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Profile.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../../Firebase';
-import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../../redux/userSlice';
+import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
 
 export default function ProfilePage() {
   const fileRef = useRef(null);
@@ -99,6 +99,21 @@ export default function ProfilePage() {
     }
   }
 
+
+  const handleSignOut = async() => {
+    try {
+      dispatch(logoutUserStart());
+      const res = await fetch ('/api/auth/logout');
+      const data = await res.json();
+      if(data.success === false) {
+        dispatch(logoutUserFailure(data.message));
+        return;
+      }
+      dispatch(logoutSuccess(data));
+    } catch (error) {
+      dispatch(logoutUserFailure(data.message));
+    }
+  }
   return (
     <div className='profile-container'>
       <h1 className='profile-title'>Profile</h1>
@@ -157,7 +172,7 @@ export default function ProfilePage() {
 
       <div className='flex-container'>
         <span onClick={handleDeleteUser} className='delete-account'>Delete account</span>
-        <span className='sign-out'>Sign out</span>
+        <span onClick={handleSignOut} className='sign-out'>Sign out</span>
       </div>
       <p className='text-red-700 mt-5'>{error ? error : ''}</p>
       <p className='text-green-700 pt-1'>
