@@ -5,7 +5,6 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '../../firebase.js';
 import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
 import { Link } from 'react-router-dom';
-import {listing} from '../../lib/data.js'
 
 export default function ProfilePage() {
   const fileRef = useRef(null);
@@ -134,6 +133,24 @@ export default function ProfilePage() {
       setShowListingError(true)
     }
   }
+
+
+
+  const handleDeleteListing = async (lisingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${lisingId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if(data.success === false){
+        console.log(data.message);
+        return;
+      }
+      setuserListing((prev) => prev.filter((listing) => listing._id !== lisingId))
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <div className='profile-container'>
       <h1 className='profile-title'>Profile</h1>
@@ -218,7 +235,7 @@ export default function ProfilePage() {
           <p >{listing.name}</p>
         </Link>
         <div className="flex flex-col item-center">
-          <button className='text-red-700 uppercase'>Delete</button>
+          <button onClick={() => handleDeleteListing (listing._id)} className='text-red-700 uppercase'>Delete</button>
           <button className='text-green-700 uppercase'>Edit</button>
         </div>
     </div>)}
