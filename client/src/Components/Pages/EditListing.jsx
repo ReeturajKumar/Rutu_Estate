@@ -32,7 +32,14 @@ export default function EditListing() {
 
   useEffect(() => {
     const fetchListing = async () => {
-      const listingId = params.listingId
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/get/${listingId}`);
+      const data = await res.json();
+      if(data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
     }
     fetchListing();
   }, [])
@@ -129,7 +136,7 @@ export default function EditListing() {
       if(+formData.regularPrice <+ formData.discountPrice) return setError('Discount price must be lower than regular price')
       setLoading(true);
       setError(false);
-      const res = await fetch('/api/listing/create', {
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
