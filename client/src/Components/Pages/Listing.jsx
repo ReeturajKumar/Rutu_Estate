@@ -11,7 +11,7 @@ export default function Listing() {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [copied, setCopied] = useState(false);  // Added copied state
+  const [copied, setCopied] = useState(false); 
   const params = useParams();
 
   useEffect(() => {
