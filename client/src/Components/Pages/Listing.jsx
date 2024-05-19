@@ -5,6 +5,8 @@ import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import { FaBath, FaBed, FaChair, FaMapMarkedAlt, FaMapMarkerAlt, FaParking, FaShare } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import ContactPage from './ContactPage';
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -12,6 +14,8 @@ export default function Listing() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false); 
+  const [Contact, setContact] = useState(false); 
+  const {currentUser} = useSelector((state) => state.user);
   const params = useParams();
 
   useEffect(() => {
@@ -73,7 +77,7 @@ export default function Listing() {
           )}
           <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
             <p className='text-2xl font-semibold'>
-              {listing.name} - ${' '}
+              {listing.name} - ₹{' '}
               {listing.offer
                 ? listing.discountPrice.toLocaleString('en-US')
                 : listing.regularPrice.toLocaleString('en-US')}
@@ -119,7 +123,10 @@ export default function Listing() {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
-            
+            {currentUser && listing.userRef !== currentUser._id && !Contact && (
+            <button onClick={() => setContact(true)} className='bg-slate-700 text-white rounded-lg uppercase p-3 hover:opacity-95'>Contact lanloard</button>
+            )}
+            {Contact && <ContactPage listing= {listing}/>}
             </div>
         </div>
       )}
