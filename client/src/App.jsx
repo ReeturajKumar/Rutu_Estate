@@ -9,6 +9,7 @@ import PrivateRoute from './Components/OAuth/PrivateRoute';
 import CreateListing from './Components/Pages/CreateListing';
 import EditListing from './Components/Pages/EditListing';
 import Listing from './Components/Pages/Listing';
+import Search from './Components/Pages/Search';
 
 export default function App() {
   return (
@@ -18,13 +19,14 @@ export default function App() {
       <Route path='/' element={<HomePage/>}/>
       <Route path='/about' element={<AboutPage/>}/>
       <Route path='/listing/:listingId' element={<Listing/>}/>
+      <Route path='/search' element={<Search/>}/>
+      <Route path='/sign-up' element={<SignUp />}/>
+      <Route path='/sign-in' element={<SignIn />}/>
       <Route element={<PrivateRoute/>}>
       <Route path='/profile' element={<ProfilePage/>}/>
       <Route path='/create-listing' element={<CreateListing/>}/>
       <Route path='/update-listing/:listingId' element={<EditListing/>}/>
       </Route>
-      <Route path='/sign-up' element={<SignUp />}/>
-      <Route path='/sign-in' element={<SignIn />}/>
     </Routes>
     </BrowserRouter>
   )
