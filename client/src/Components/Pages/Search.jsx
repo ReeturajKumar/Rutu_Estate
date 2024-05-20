@@ -57,7 +57,7 @@ export default function Search() {
       const data = await res.json();
       if (data.length > 8) {
         setShowMore(true);
-      } else {
+      }else{
         setShowMore(false);
       }
       setListings(data);
@@ -123,11 +123,12 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
-    if (data.length < 9) {
+    if (data.length < 8) {
       setShowMore(false);
     }
     setListings([...listings, ...data]);
   };
+
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
@@ -244,7 +245,15 @@ export default function Search() {
             </p>
           )}
 
-          {!loading && listings && listings.map((listing) => <Listingitem key={listings._id} listing={listing}/>)}
+          {!loading && listings && listings.map((listing) => (
+          <Listingitem key={listings._id} listing={listing}/>
+          ))}
+
+          {showMore && (
+            <button onClick={
+              onShowMoreClick}
+            className='text-green-700 p-7 text-center w-full'>Show more</button>
+          )}
         </div>
       </div>
     </div>
