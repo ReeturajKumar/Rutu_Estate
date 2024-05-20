@@ -1,10 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Profile.css';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import {app} from '../../firebase';
-
-import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { app, storage } from '../../firebase';
+import {
+  updateUserStart,
+  UpdateuserSuccess,
+  UpdateuserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  logoutUserStart,
+  logoutUserFailure,
+  logoutSuccess
+} from '../../redux/userSlice';
 import { Link } from 'react-router-dom';
 
 export default function ProfilePage() {
@@ -15,8 +24,8 @@ export default function ProfilePage() {
   const [fileError, setFileError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [showListingError, setShowListingError] = useState(false)
-  const [userListing, setuserListing] = useState([])
+  const [showListingError, setShowListingError] = useState(false);
+  const [userListing, setuserListing] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +35,6 @@ export default function ProfilePage() {
   }, [file]);
 
   const handleFileUpload = (file) => {
-    const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -85,7 +93,6 @@ export default function ProfilePage() {
     }
   };
 
-
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
@@ -93,64 +100,61 @@ export default function ProfilePage() {
         method: 'DELETE',
       });
       const data = await res.json();
-      if (data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
 
-
-  const handleSignOut = async() => {
+  const handleSignOut = async () => {
     try {
       dispatch(logoutUserStart());
-      const res = await fetch ('/api/auth/logout');
+      const res = await fetch('/api/auth/logout');
       const data = await res.json();
-      if(data.success === false) {
+      if (data.success === false) {
         dispatch(logoutUserFailure(data.message));
         return;
       }
       dispatch(logoutSuccess(data));
     } catch (error) {
-      dispatch(logoutUserFailure(data.message));
+      dispatch(logoutUserFailure(error.message));
     }
-  }
-
+  };
 
   const handleShowListings = async () => {
     try {
-      setShowListingError(false)
+      setShowListingError(false);
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
-      if(data.success === false) {
+      if (data.success === false) {
         setShowListingError(true);
-        return
+        return;
       }
-      setuserListing(data)
+      setuserListing(data);
     } catch (error) {
-      setShowListingError(true)
+      setShowListingError(true);
     }
-  }
+  };
 
-
-
-  const handleDeleteListing = async (lisingId) => {
+  const handleDeleteListing = async (listingId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${lisingId}`, {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
         method: 'DELETE',
       });
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
         return;
       }
-      setuserListing((prev) => prev.filter((listing) => listing._id !== lisingId))
+      setuserListing((prev) => prev.filter((listing) => listing._id !== listingId));
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
+
   return (
     <div className='profile-container'>
       <h1 className='profile-title'>Profile</h1>
@@ -170,12 +174,11 @@ export default function ProfilePage() {
         />
         <p className='text-sm self-center'>
           {fileError ? (
-            <span className='text-red-700'>Image size is must be less than 2mb</span>
+            <span className='text-red-700'>Image size must be less than 2MB</span>
           ) : fileperc > 0 && fileperc < 100 ? (
-            <span className='text-slate-700'>{`Uploading ${fileperc}%`}
-            </span>
+            <span className='text-slate-700'>{`Uploading ${fileperc}%`}</span>
           ) : fileperc === 100 ? (
-            <span className='text-green-700'>Successfully Uploaded !</span>
+            <span className='text-green-700'>Successfully Uploaded!</span>
           ) : (
             ''
           )}
@@ -206,7 +209,7 @@ export default function ProfilePage() {
         <button disabled={loading} className='btn'>
           {loading ? 'Loading...' : 'Update'}
         </button>
-        <Link className='btn2' to={"/create-listing"}>
+        <Link className='btn2' to={'/create-listing'}>
           Create Listing
         </Link>
       </form>
@@ -217,31 +220,33 @@ export default function ProfilePage() {
       </div>
       <p className='text-red-700 mt-5'>{error ? error : ''}</p>
       <p className='text-green-700 pt-1'>
-        {updateSuccess ? `Updated Successfully` : ''}
+        {updateSuccess ? 'Updated Successfully' : ''}
       </p>
-      <button onClick={handleShowListings} className='text-green-700 w-full'> Show Listing
+      <button onClick={handleShowListings} className='text-green-700 w-full'> Show Listings
       </button>
       <p className='text-red-700 mt-5'>{showListingError ? 'Error showing listings' : ''}</p>
 
-      {userListing && userListing.length >0 && 
-      <div className=" flex flex-col gap-5">
-        <h1 className='text-center mt-7 text-3xl font-semibold'>Your Listing</h1>
-      {userListing.map((listing) => <div key={listing._id}
-       className='border rounded-lg p-3 flex justify-between items-center gap-5' >
-        <Link to={`/listing/${listing._id}`}>
-          <img src={listing.imageUrl[0]} alt='' className='h-20 w-20 object-contain'/>
-        </Link>
-        <Link className='text-slate-700 font-semibold flex-1 truncate' to={`/listing/${listing._id}`}>
-          <p >{listing.name}</p>
-        </Link>
-        <div className="flex flex-col item-center">
-          <button onClick={() => handleDeleteListing (listing._id)} className='text-red-700 uppercase'>Delete</button>
-          <Link to={`/update-listing/${listing._id}`}>
-          <button className='text-green-700 uppercase'>Edit</button>
-          </Link>
+      {userListing && userListing.length > 0 && (
+        <div className='flex flex-col gap-5'>
+          <h1 className='text-center mt-7 text-3xl font-semibold'>Your Listings</h1>
+          {userListing.map((listing) => (
+            <div key={listing._id} className='border rounded-lg p-3 flex justify-between items-center gap-5'>
+              <Link to={`/listing/${listing._id}`}>
+                <img src={listing.imageUrl[0]} alt='' className='h-20 w-20 object-contain'/>
+              </Link>
+              <Link className='text-slate-700 font-semibold flex-1 truncate' to={`/listing/${listing._id}`}>
+                <p>{listing.name}</p>
+              </Link>
+              <div className='flex flex-col items-center'>
+                <button onClick={() => handleDeleteListing(listing._id)} className='text-red-700 uppercase'>Delete</button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className='text-green-700 uppercase'>Edit</button>
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
-    </div>)}
-      </div>}
+      )}
     </div>
   );
 }
