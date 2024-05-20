@@ -49,9 +49,9 @@ export default function Listing() {
             {listing.imageUrl.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[550px]"
+                  className=" h-[540px]"
                   style={{
-                    background: `url(${url}) center no-repeat`,
+                    background: `url(${url}) center`,
                     backgroundSize: 'cover',
                   }}
                 ></div>
@@ -89,7 +89,7 @@ export default function Listing() {
             </p>
             <div className='flex gap-4'>
               <p className='bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
-                {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
+                {listing.type === 'rent' ? 'For Rent' : 'For sell'}
               </p>
               {listing.offer && (
                 <p className='bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
@@ -99,7 +99,7 @@ export default function Listing() {
             </div>
             <p className='text-slate-800'>
               <span className='font-semibold text-black'>Description - </span>
-              {listing.description}
+              {listing.desc}
             </p>
             <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
               <li className='flex items-center gap-1 whitespace-nowrap '>
