@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../CSS/Profile.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import {app} from '../../firebase';
+import {app} from '../../firebase.js';
 
 import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
 import { Link } from 'react-router-dom';
