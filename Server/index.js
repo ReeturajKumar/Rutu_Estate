@@ -5,6 +5,7 @@ import userRouter from './Routes/userRoute.js';
 import authRouter from './Routes/authRoute.js';
 import listingRouter from './Routes/listingRoute.js'
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 dotenv.config();
 
@@ -12,6 +13,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log('Connected to DB')})
   .catch((err) => {
     console.log(err)});
+
+    const __dirname = path.resolve();
 
 const app = express();
 app.use(express.json());
@@ -28,6 +31,14 @@ app.listen(8080, () => {
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing' , listingRouter);
+
+
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req,res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 
 
