@@ -52,6 +52,7 @@ export default function Search() {
 
     const fetchListings = async () => {
       setLoading(true);
+      
       setShowMore(false);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
@@ -132,7 +133,7 @@ export default function Search() {
 
   return (
     <>
-    <div className='flex flex-col md:flex-row'>
+    <div className='flex flex-col md:flex-row pt-20'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
         <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
           <div className='flex items-center gap-2'>
