@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../CSS/Listing.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import app from './../../firebase.js';
+import {app} from '../../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
