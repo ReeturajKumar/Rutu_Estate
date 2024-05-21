@@ -34,7 +34,6 @@ export default function Home() {
       try {
         const res = await fetch('/api/listing/get?type=rent&limit=3');
         const data = await res.json();
-        console.log('Rent listings:', data); // Debugging line
         setRentListings(Array.isArray(data) ? data : []);
         fetchSaleListings();
       } catch (error) {
@@ -47,7 +46,6 @@ export default function Home() {
       try {
         const res = await fetch('/api/listing/get?type=sell&limit=3');
         const data = await res.json();
-        console.log('Sale listings:', data); // Debugging line
         setSaleListings(Array.isArray(data) ? data : []);
         setLoading(false);
       } catch (error) {
