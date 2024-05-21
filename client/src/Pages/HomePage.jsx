@@ -22,7 +22,6 @@ export default function Home() {
       try {
         const res = await fetch('/api/listing/get?offer=true&limit=3');
         const data = await res.json();
-        console.log('Offer listings:', data); // Debugging line
         setOfferListings(Array.isArray(data) ? data : []);
         fetchRentListings();
       } catch (error) {
