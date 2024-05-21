@@ -1,14 +1,14 @@
 import express from 'express';
-import { deleteUser, getUser, listingUser, updateUser } from './../Controllers/userController.js';
-import { verifyUser } from '../utils/VerifyTokn.js';
-
+import { deleteUser, test, updateUser,  getUserListings, getUser} from '../Controllers/userController.js';
+import { verifyToken } from '../utils/VerifyTokn.js';
 
 
 const router = express.Router();
 
-router.post('/update/:id',verifyUser, updateUser);
-router.delete('/delete/:id',verifyUser, deleteUser);
-router.get('/listings/:id', verifyUser, listingUser);
-router.get('/:id', verifyUser, getUser);
+router.get('/test', test);
+router.post('/update/:id', verifyToken, updateUser)
+router.delete('/delete/:id', verifyToken, deleteUser)
+router.get('/listings/:id', verifyToken, getUserListings)
+router.get('/:id', verifyToken, getUser)
 
 export default router;

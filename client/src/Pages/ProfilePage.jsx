@@ -6,7 +6,7 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { app } from '../../redux/firebase';
+import { app } from '../firebase';
 import {
   updateUserStart,
   updateUserSuccess,
@@ -15,7 +15,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   signOutUserStart,
-} from '../../redux/userSlice';
+} from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 export default function Profile() {

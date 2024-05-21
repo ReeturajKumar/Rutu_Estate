@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Listingitem from './Listingitem';
-import Footer from './Footer';
-
+import ListingItem from '../components/ListingItem';
 
 export default function Search() {
   const navigate = useNavigate();
@@ -52,14 +50,13 @@ export default function Search() {
 
     const fetchListings = async () => {
       setLoading(true);
-      
       setShowMore(false);
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
       if (data.length > 8) {
         setShowMore(true);
-      }else{
+      } else {
         setShowMore(false);
       }
       setListings(data);
@@ -73,7 +70,7 @@ export default function Search() {
     if (
       e.target.id === 'all' ||
       e.target.id === 'rent' ||
-      e.target.id === 'sell'
+      e.target.id === 'sale'
     ) {
       setSidebardata({ ...sidebardata, type: e.target.id });
     }
@@ -125,15 +122,13 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
-    if (data.length < 8) {
+    if (data.length < 9) {
       setShowMore(false);
     }
     setListings([...listings, ...data]);
   };
-
   return (
-    <>
-    <div className='flex flex-col md:flex-row pt-20'>
+    <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
         <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
           <div className='flex items-center gap-2'>
@@ -159,7 +154,7 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === 'all'}
               />
-              <span>Rent & Sell</span>
+              <span>Rent & Sale</span>
             </div>
             <div className='flex gap-2'>
               <input
@@ -174,12 +169,12 @@ export default function Search() {
             <div className='flex gap-2'>
               <input
                 type='checkbox'
-                id='sell'
+                id='sale'
                 className='w-5'
                 onChange={handleChange}
-                checked={sidebardata.type === 'sell'}
+                checked={sidebardata.type === 'sale'}
               />
-              <span>Sell</span>
+              <span>Sale</span>
             </div>
             <div className='flex gap-2'>
               <input
@@ -248,19 +243,22 @@ export default function Search() {
             </p>
           )}
 
-          {!loading && listings && listings.map((listing) => (
-          <Listingitem key={listings._id} listing={listing}/>
-          ))}
+          {!loading &&
+            listings &&
+            listings.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
+            ))}
 
           {showMore && (
-            <button onClick={
-              onShowMoreClick}
-            className='text-green-700 p-7 text-center w-full'>Show more</button>
+            <button
+              onClick={onShowMoreClick}
+              className='text-green-700 hover:underline p-7 text-center w-full'
+            >
+              Show more
+            </button>
           )}
         </div>
       </div>
     </div>
-    <Footer/>
-    </>
   );
 }
