@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ListingItem from '../components/ListingItem';
+import ListingItem from '../Components/Listingitem';
+import Footer from './Footer';
 
 export default function Search() {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function Search() {
     if (
       e.target.id === 'all' ||
       e.target.id === 'rent' ||
-      e.target.id === 'sale'
+      e.target.id === 'sell'
     ) {
       setSidebardata({ ...sidebardata, type: e.target.id });
     }
@@ -128,6 +129,7 @@ export default function Search() {
     setListings([...listings, ...data]);
   };
   return (
+    <>
     <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
         <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
@@ -169,10 +171,10 @@ export default function Search() {
             <div className='flex gap-2'>
               <input
                 type='checkbox'
-                id='sale'
+                id='sell'
                 className='w-5'
                 onChange={handleChange}
-                checked={sidebardata.type === 'sale'}
+                checked={sidebardata.type === 'sell'}
               />
               <span>Sale</span>
             </div>
@@ -252,7 +254,7 @@ export default function Search() {
           {showMore && (
             <button
               onClick={onShowMoreClick}
-              className='text-green-700 hover:underline p-7 text-center w-full'
+              className='text-green-700 p-7 text-center w-full'
             >
               Show more
             </button>
@@ -260,5 +262,7 @@ export default function Search() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }

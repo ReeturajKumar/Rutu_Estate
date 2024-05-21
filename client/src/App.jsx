@@ -1,15 +1,16 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import HomePage from './Components/Pages/HomePage';
-import AboutPage from './Components/Pages/AboutPage';
-import ProfilePage from './Components/Pages/ProfilePage';
-import SignIn from './Components/Pages/SignIn';
-import SignUp from './Components/Pages/SignUp';
-import Header from './Components/Header/Header';
-import PrivateRoute from './Components/OAuth/PrivateRoute';
-import CreateListing from './Components/Pages/CreateListing';
-import EditListing from './Components/Pages/EditListing';
-import Listing from './Components/Pages/Listing';
-import Search from './Components/Pages/Search';
+import HomePage from './Pages/HomePage';
+import AboutPage from './Pages/AboutPage';
+import Listing from './Pages/Listing';
+import Search from './Pages/Search';
+import SignUp from './Pages/SignUp';
+import SignIn from './Pages/SignIn';
+import Profile from './Pages/ProfilePage';
+import CreateListing from './Pages/CreateListing';
+import EditListing from './Pages/EditListing';
+import Header from './Components/Header';
+import PrivateRoute from './Components/PrivateRoute';
+
 
 export default function App() {
   return (
@@ -23,7 +24,7 @@ export default function App() {
       <Route path='/sign-up' element={<SignUp />}/>
       <Route path='/sign-in' element={<SignIn />}/>
       <Route element={<PrivateRoute/>}>
-      <Route path='/profile' element={<ProfilePage/>}/>
+      <Route path='/profile' element={<Profile/>}/>
       <Route path='/create-listing' element={<CreateListing/>}/>
       <Route path='/update-listing/:listingId' element={<EditListing/>}/>
       </Route>

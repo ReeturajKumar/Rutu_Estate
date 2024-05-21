@@ -14,9 +14,9 @@ export default function CreateListing() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
-    imageUrls: [],
+    imageUrl: [],
     name: '',
-    description: '',
+    desc: '',
     address: '',
     type: 'rent',
     bedrooms: 1,
@@ -33,7 +33,7 @@ export default function CreateListing() {
   const [loading, setLoading] = useState(false);
   console.log(formData);
   const handleImageSubmit = (e) => {
-    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+    if (files.length > 0 && files.length + formData.imageUrl.length < 7) {
       setUploading(true);
       setImageUploadError(false);
       const promises = [];
@@ -45,7 +45,7 @@ export default function CreateListing() {
         .then((urls) => {
           setFormData({
             ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
+            imageUrl: formData.imageUrl.concat(urls),
           });
           setImageUploadError(false);
           setUploading(false);
@@ -88,12 +88,12 @@ export default function CreateListing() {
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
-      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+      imageUrl: formData.imageUrl.filter((_, i) => i !== index),
     });
   };
 
   const handleChange = (e) => {
-    if (e.target.id === 'sale' || e.target.id === 'rent') {
+    if (e.target.id === 'sell' || e.target.id === 'rent') {
       setFormData({
         ...formData,
         type: e.target.id,
@@ -126,7 +126,7 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls.length < 1)
+      if (formData.imageUrl.length < 1)
         return setError('You must upload at least one image');
       if (+formData.regularPrice < +formData.discountPrice)
         return setError('Discount price must be lower than regular price');
@@ -175,10 +175,10 @@ export default function CreateListing() {
             type='text'
             placeholder='Description'
             className='border p-3 rounded-lg'
-            id='description'
+            id='desc'
             required
             onChange={handleChange}
-            value={formData.description}
+            value={formData.desc}
           />
           <input
             type='text'
@@ -193,10 +193,10 @@ export default function CreateListing() {
             <div className='flex gap-2'>
               <input
                 type='checkbox'
-                id='sale'
+                id='sell'
                 className='w-5'
                 onChange={handleChange}
-                checked={formData.type === 'sale'}
+                checked={formData.type === 'sell'}
               />
               <span>Sell</span>
             </div>
@@ -337,8 +337,8 @@ export default function CreateListing() {
           <p className='text-red-700 text-sm'>
             {imageUploadError && imageUploadError}
           </p>
-          {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
+          {formData.imageUrl.length > 0 &&
+            formData.imageUrl.map((url, index) => (
               <div
                 key={url}
                 className='flex justify-between p-3 border items-center'

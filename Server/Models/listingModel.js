@@ -6,7 +6,7 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    description: {
+    desc: {
       type: String,
       required: true,
     },
@@ -46,7 +46,7 @@ const listingSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    imageUrls: {
+    imageUrl: {
       type: Array,
       required: true,
     },

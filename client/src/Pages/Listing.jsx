@@ -14,9 +14,7 @@ import {
   FaParking,
   FaShare,
 } from 'react-icons/fa';
-import Contact from '../components/Contact';
-
-// https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
+import Contact from '../Components/ContactPage';
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -59,7 +57,7 @@ export default function Listing() {
       {listing && !loading && !error && (
         <div>
           <Swiper navigation>
-            {listing.imageUrls.map((url) => (
+            {listing.imageUrl.map((url) => (
               <SwiperSlide key={url}>
                 <div
                   className='h-[550px]'
@@ -112,7 +110,7 @@ export default function Listing() {
             </div>
             <p className='text-slate-800'>
               <span className='font-semibold text-black'>Description - </span>
-              {listing.description}
+              {listing.desc}
             </p>
             <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
               <li className='flex items-center gap-1 whitespace-nowrap '>
