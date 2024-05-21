@@ -1,22 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import '../CSS/Profile.css';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import { app } from '../../firebase.js';
-import { updateUserStart, UpdateuserSuccess, UpdateuserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logoutUserStart, logoutUserFailure, logoutSuccess } from '../../redux/userSlice';
+import { useSelector } from 'react-redux';
+import { useRef, useState, useEffect } from 'react';
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { app } from '../../firebase';
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOutUserStart,
+} from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-
-export default function ProfilePage() {
+export default function Profile() {
   const fileRef = useRef(null);
-  const [file, setFile] = useState(undefined);
   const { currentUser, loading, error } = useSelector((state) => state.user);
-  const [fileperc, setFilePerc] = useState(0);
-  const [fileError, setFileError] = useState(false);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [showListingError, setShowListingError] = useState(false)
-  const [userListing, setuserListing] = useState([])
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
+
+  // firebase storage
+  // allow read;
+  // allow write: if
+  // request.resource.size < 2 * 1024 * 1024 &&
+  // request.resource.contentType.matches('image/.*')
 
   useEffect(() => {
     if (file) {
@@ -33,23 +51,17 @@ export default function ProfilePage() {
     uploadTask.on(
       'state_changed',
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFilePerc(Math.round(progress));
       },
       (error) => {
-        console.error('Error uploading file:', error);
-        setFileError(true);
+        setFileUploadError(true);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref)
-          .then((downloadURL) => {
-            setFormData({ ...formData, avatar: downloadURL });
-            setFileError(false);
-          })
-          .catch((error) => {
-            console.error('Error getting download URL:', error);
-            setFileError(true);
-          });
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, avatar: downloadURL })
+        );
       }
     );
   };
@@ -71,19 +83,16 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (data.success === false) {
-        dispatch(UpdateuserFailure(data.message));
+        dispatch(updateUserFailure(data.message));
         return;
       }
-      dispatch(UpdateuserSuccess(data));
+
+      dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
-      setTimeout(() => {
-        setUpdateSuccess(false);
-      }, 3000);
     } catch (error) {
-      dispatch(UpdateuserFailure(error.message));
+      dispatch(updateUserFailure(error.message));
     }
   };
-
 
   const handleDeleteUser = async () => {
     try {
@@ -92,64 +101,65 @@ export default function ProfilePage() {
         method: 'DELETE',
       });
       const data = await res.json();
-      if (data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
 
-
-  const handleSignOut = async() => {
+  const handleSignOut = async () => {
     try {
-      dispatch(logoutUserStart());
-      const res = await fetch ('/api/auth/logout');
+      dispatch(signOutUserStart());
+      const res = await fetch('/api/auth/signout');
       const data = await res.json();
-      if(data.success === false) {
-        dispatch(logoutUserFailure(data.message));
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(logoutSuccess(data));
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(logoutUserFailure(data.message));
+      dispatch(deleteUserFailure(data.message));
     }
-  }
-
+  };
 
   const handleShowListings = async () => {
     try {
-      setShowListingError(false)
+      setShowListingsError(false);
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
-      if(data.success === false) {
-        setShowListingError(true);
-        return
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
       }
-      setuserListing(data)
+
+      setUserListings(data);
     } catch (error) {
-      setShowListingError(true)
+      setShowListingsError(true);
     }
-  }
+  };
 
-
-
-  const handleDeleteListing = async (lisingId) => {
+  const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${lisingId}`, {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
         method: 'DELETE',
       });
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
+        console.log(data.message);
         return;
       }
-      setuserListing((prev) => prev.filter((listing) => listing._id !== lisingId))
+
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
   return (
     <div className='profile-container'>
       <h1 className='profile-title'>Profile</h1>
@@ -234,7 +244,7 @@ export default function ProfilePage() {
           <p >{listing.name}</p>
         </Link>
         <div className="flex flex-col item-center">
-          <button onClick={() => handleDeleteListing (listing._id)} className='text-red-700 uppercase'>Delete</button>
+          <button onClick={() => handleListingDelete  (listing._id)} className='text-red-700 uppercase'>Delete</button>
           <Link to={`/update-listing/${listing._id}`}>
           <button className='text-green-700 uppercase'>Edit</button>
           </Link>
