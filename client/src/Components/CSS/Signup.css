@@ -5,6 +5,7 @@
 }
 
 .success-message {
+  padding-top: 40px;
   background-color: #d4edda; 
   color: #155724;
   padding: 10px;
@@ -13,6 +14,7 @@
 }
 
 .signup-title {
+  padding-top: 40px;
   margin-top: 1.75rem;
   font-size: 1.875rem;
   text-align: center;
